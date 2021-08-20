@@ -25,6 +25,10 @@ function init() {
     sys.newSalmon();
   }
 
+  for (let i = 0; i < init_shark_count; i++) {
+    sys.newShark();
+  }
+
   //init count
   count.plant = init_plant_count;
   count.salmon = init_salmon_count;
@@ -49,7 +53,7 @@ async function loop() {
 
   //logic
   sys.salmons.forEach((salmon) => {
-    salmon.frame();
+    if (salmon) salmon.frame();
   });
 
   sys.sharks.forEach((shark) => {
@@ -100,6 +104,19 @@ function draw(sys) {
       ctx.fillRect(
         salmon.x * blockSize,
         salmon.y * blockSize,
+        blockSize,
+        blockSize
+      );
+    }
+  });
+
+  //draw sharks
+  ctx.fillStyle = shark_color;
+  sys.sharks.forEach((shark) => {
+    if (shark) {
+      ctx.fillRect(
+        shark.x * blockSize,
+        shark.y * blockSize,
         blockSize,
         blockSize
       );
