@@ -23,9 +23,10 @@ function Food() {
 }
 
 function Salmon(genes) {
-  this.healthCap = 100;
-  this.health = 100;
+  this.healthCap = salmon_health_cap;
+  this.health = salmon_health_cap;
   this.viewRadius = 5;
+  this.reproductionCoolDown = salmon_reproduction_cool_down;
 
   this.x = random(0, gridSize - 1);
   this.y = random(0, gridSize - 1);
@@ -50,9 +51,12 @@ function Salmon(genes) {
           this.eat(found);
           break;
         case "salmon":
+          this.reproduce(found);
           break;
       }
     }
+
+    if (this.reproductionCoolDown != 0) this.reproductionCoolDown--;
     if (chooseRandom(salmon_velchange_prob)) this.changeVel();
   };
 
@@ -110,6 +114,13 @@ function Salmon(genes) {
     map[this.x][this.y] = null;
     const index = sys.salmons.indexOf(this);
     sys.salmons.splice(index, 1);
+  };
+
+  this.reproduce = (found) => {
+    if (this.reproductionCoolDown != 0) return;
+    this.reproductionCoolDown = salmon_reproduction_cool_down;
+    sys.newSalmon();
+    console.log("reproduced");
   };
 }
 

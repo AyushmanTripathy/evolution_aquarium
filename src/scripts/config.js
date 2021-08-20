@@ -10,4 +10,6 @@ const shark_color = "red";
 const salmon_velchange_prob = 2;
 const init_food_count = 30;
 const init_salmon_count = 10;
-const food_generation_prob = 5;
+const food_generation_prob = 8;
+const salmon_reproduction_cool_down = 50;
+const salmon_health_cap = 50;
