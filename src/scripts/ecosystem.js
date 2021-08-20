@@ -23,8 +23,8 @@ function Food() {
 }
 
 function Salmon(genes) {
-  this.healthCap = 50;
-  this.health = 50;
+  this.healthCap = 100;
+  this.health = 100;
   this.viewRadius = 5;
 
   this.x = random(0, gridSize - 1);
@@ -48,6 +48,8 @@ function Salmon(genes) {
       switch (found.type) {
         case "food":
           this.eat(found);
+          break;
+        case "salmon":
           break;
       }
     }
@@ -79,6 +81,15 @@ function Salmon(genes) {
     map[this.x][this.y] = 0;
     this.x += this.vel.x;
     this.y += this.vel.y;
+
+    // teleport to other side
+    // if they cross boundry
+    if (this.x >= gridSize - 1) this.x = 1;
+    else if (this.x <= 0) this.x = gridSize - 2;
+
+    if (this.y >= gridSize - 1) this.y = 1;
+    else if (this.y <= 0) this.y = gridSize - 2;
+
     map[this.x][this.y] = makeGridCell("salmon", this);
   };
 
