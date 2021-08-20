@@ -1,30 +1,35 @@
 function ecoSystem() {
-  this.foods = [];
+  this.plants = [];
   this.salmons = [];
+  this.sharks = [];
 
-  this.newFood = () => {
-    const food = new Food();
-    map[food.x][food.y] = makeGridCell("food", food, this.foods.length);
-    this.foods.push(food);
+  this.newplant = () => {
+    const plant = new Plant();
+    map[plant.x][plant.y] = makeGridCell("plant", plant, this.plants.length);
+    this.plants.push(plant);
   };
 
   this.newSalmon = () => {
     const salmon = new Salmon();
 
     //check move for change
-    map[salmon.x][salmon.y] = makeGridCell("salmon", salmon, this.foods.length);
+    map[salmon.x][salmon.y] = makeGridCell(
+      "salmon",
+      salmon,
+      this.plants.length
+    );
     this.salmons.push(salmon);
   };
 }
 
-function Food() {
+function Plant() {
   this.x = random(0, gridSize - 1);
   this.y = random(0, gridSize - 1);
 }
 
 function Salmon(genes) {
   this.healthCap = salmon_health_cap;
-  this.health = salmon_health_cap;
+  this.health = salmon_starting_health;
   this.viewRadius = 5;
   this.reproductionCoolDown = salmon_reproduction_cool_down;
 
@@ -47,7 +52,7 @@ function Salmon(genes) {
     //found something
     if (found) {
       switch (found.type) {
-        case "food":
+        case "plant":
           this.eat(found);
           break;
         case "salmon":
@@ -102,15 +107,14 @@ function Salmon(genes) {
     this.vel.y = random(-1, 1);
   };
 
-  this.eat = (food) => {
-    sys.foods[food.index] = null;
-    console.log("eaten", food);
-    map[food.x][food.y] = null;
+  this.eat = (plant) => {
+    sys.plants[plant.index] = null;
+    console.log("eated");
+    map[plant.x][plant.y] = null;
     this.health = this.healthCap;
   };
 
   this.die = () => {
-    console.log("dead", this);
     map[this.x][this.y] = null;
     const index = sys.salmons.indexOf(this);
     sys.salmons.splice(index, 1);
@@ -120,7 +124,6 @@ function Salmon(genes) {
     if (this.reproductionCoolDown != 0) return;
     this.reproductionCoolDown = salmon_reproduction_cool_down;
     sys.newSalmon();
-    console.log("reproduced");
   };
 }
 

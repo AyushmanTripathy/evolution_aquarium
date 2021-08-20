@@ -1,6 +1,11 @@
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
+const plant_population = document.querySelector("#plant_population");
+const salmon_population = document.querySelector("#salmon_population");
+const shark_population = document.querySelector("#shark_population");
+
 const blockSize = canvas.height / gridSize;
+let count = {};
 
 let sys;
 let map;
@@ -13,12 +18,17 @@ function init() {
 
   sys = new ecoSystem();
 
-  for (let i = 0; i < init_food_count; i++) {
-    sys.newFood();
+  for (let i = 0; i < init_plant_count; i++) {
+    sys.newplant();
   }
   for (let i = 0; i < init_salmon_count; i++) {
     sys.newSalmon();
   }
+
+  //init count
+  count.plant = init_plant_count;
+  count.salmon = init_salmon_count;
+  count.shark = init_shark_count;
 
   running = true;
 
@@ -33,17 +43,25 @@ async function loop() {
 
   //check if everyone died
   if (sys.salmons.length <= 0) return console.log("everyone dead");
+  if (chooseRandom(plant_generation_prob)) sys.newplant();
 
   await sleep(frameRate);
-  console.log("loop");
 
   //logic
   sys.salmons.forEach((salmon) => {
     salmon.frame();
-    if (chooseRandom(food_generation_prob)) sys.newFood();
   });
 
+  sys.sharks.forEach((shark) => {
+    shark.frame();
+  });
+
+  //rendering
   draw(sys);
+  shark_population.innerHTML = count.shark;
+  salmon_population.innerHTML = count.salmon;
+  plant_population.innerHTML = count.plant;
+
   return loop();
 }
 
@@ -62,13 +80,13 @@ function draw(sys) {
   ctx.fillStyle = BG;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  //draw foods
-  ctx.fillStyle = food_color;
-  sys.foods.forEach((food) => {
-    if (food) {
+  //draw plants
+  ctx.fillStyle = plant_color;
+  sys.plants.forEach((plant) => {
+    if (plant) {
       ctx.fillRect(
-        food.x * blockSize,
-        food.y * blockSize,
+        plant.x * blockSize,
+        plant.y * blockSize,
         blockSize,
         blockSize
       );
