@@ -1,17 +1,17 @@
 # EVOLUTION AQUARIUM
 
-> base three species (prey , predator and plant)
-> salmon => prey
-> shark => predator
+> base three species (prey , predator and plant) <br/>
+> salmon => prey <br/>
+> shark => predator <br/>       
 
 ### ON EVENT
 
-> where big fishes eat small fishes (if they come close)
-> old fiches die due to diseases (relative to age)
-> reproduction if opposite sex meet
-> male in same species fight
+> where sharks eat salmons <br/> 
+> salmons eat plant<br/> 
+> reproduction if opposite sex meet<br/> 
+> male in same species fight<br/> 
 
 ### EVERY FRAME
 
-> food generates randomly
-> every frame hunger decreases (0 = die())
+> plants generates randomly<br/> 
+> every frame hunger decreases (0 = die())<br/> 
