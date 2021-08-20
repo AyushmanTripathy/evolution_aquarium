@@ -19,3 +19,7 @@ body {
   width: 100vw;
   color: $sec;
 }
+
+canvas {
+  border: $sec 1px solid;
+}
