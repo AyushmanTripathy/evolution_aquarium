@@ -1,26 +1,22 @@
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
-
-const gridSize = 100;
 const blockSize = canvas.height / gridSize;
 
-const BG = "#202124";
 let sys;
 let map;
 
-const frameRate = 200;
 let running = false;
 
-init(40);
-function init(count) {
+init();
+function init() {
   map = makeMap(gridSize, null);
 
   sys = new ecoSystem();
 
-  for (let i = 0; i < count; i++) {
+  for (let i = 0; i < init_food_count; i++) {
     sys.newFood();
   }
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < init_salmon_count; i++) {
     sys.newSalmon();
   }
 
@@ -35,13 +31,16 @@ function init(count) {
 async function loop() {
   if (!running) return;
 
+  //check if everyone died
+  if (sys.salmons.length <= 0) return console.log("everyone dead");
+
   await sleep(frameRate);
   console.log("loop");
 
   //logic
   sys.salmons.forEach((salmon) => {
     salmon.frame();
-    if (chooseRandom(8)) sys.newFood();
+    if (chooseRandom(food_generation_prob)) sys.newFood();
   });
 
   draw(sys);
@@ -64,7 +63,7 @@ function draw(sys) {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   //draw foods
-  ctx.fillStyle = "green";
+  ctx.fillStyle = food_color;
   sys.foods.forEach((food) => {
     if (food) {
       ctx.fillRect(
@@ -77,7 +76,7 @@ function draw(sys) {
   });
 
   //draw salmons
-  ctx.fillStyle = "red";
+  ctx.fillStyle = salmon_color;
   sys.salmons.forEach((salmon) => {
     if (salmon) {
       ctx.fillRect(
