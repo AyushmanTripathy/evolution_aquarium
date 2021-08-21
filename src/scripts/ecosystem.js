@@ -60,7 +60,6 @@ function Shark() {
     this.age--;
     if (this.age <= 0) return this.die();
 
-
     this.move();
     const found = this.checkEnv();
 
@@ -131,7 +130,7 @@ function Shark() {
     console.log("hunted");
     map[salmon.x][salmon.y] = null;
 
-    this.health = this.healthCap;
+    this.health += shark_health_regenration;
   };
 
   this.die = () => {
@@ -238,7 +237,7 @@ function Salmon() {
     sys.plants[plant.index] = null;
     console.log("eated");
     map[plant.x][plant.y] = null;
-    this.health = this.healthCap;
+    this.health += salmon_health_regenration;
   };
 
   this.die = () => {

@@ -7,13 +7,13 @@ const salmon_population = document.querySelector("#salmon_population");
 const shark_population = document.querySelector("#shark_population");
 
 const blockSize = canvas.height / gridSize;
-let chartY = 0;
 let count = {};
 
 let sys;
 let map;
 
 let running = false;
+let plotingVars;
 
 init();
 function init() {
@@ -32,13 +32,13 @@ function init() {
     sys.newShark();
   }
 
-  //init chart
-  initPlot();
-
   //init count
   count.plant = init_plant_count;
   count.salmon = init_salmon_count;
   count.shark = init_shark_count;
+
+  //init chart
+  initPlot();
 
   running = true;
 
@@ -65,7 +65,7 @@ async function loop() {
     shark.frame();
   });
 
-  plot(count.salmon, 5);
+  plot(count.salmon, count.shark, count.plant);
 
   //rendering
   draw(sys);
@@ -80,34 +80,54 @@ async function loop() {
 }
 
 function initPlot() {
-  chartCtx.strokeStyle = "#bbb";
+  chartCtx.lineWidth = 1;
 
-  chartCtx.beginPath();
-  chartCtx.moveTo(0, chart.height);
+  plotingVars = {
+    chartY: 0,
+    salmon: count.salmon,
+    shark: count.shark,
+    plant: count.plant,
+  };
 }
 
-function plot(value) {
-  if (chartY >= chart.width) {
-    chartY = 0;
+function plot(salmonCount, sharkCount, plantCount) {
+  if (plotingVars.chartY >= chart.width) {
+    plotingVars.chartY = 0;
     chartCtx.fillStyle = BG;
     chartCtx.fillRect(0, 0, chart.width, chart.height);
 
     chartCtx.closePath();
-    initPlot();
+    chartCtx.beginPath();
   }
 
-  plotEach(value, salmon_scale);
+  plotEach("salmon", salmonCount, salmon_scale, salmon_color);
 
-  chartY += 1;
+  plotEach("shark", sharkCount, shark_scale, shark_color);
+
+  plotEach("plant", plantCount, plant_scale, plant_color);
+
+  plotingVars.salmon = count.salmon;
+  plotingVars.shark = count.shark;
+  plotingVars.plant = count.plant;
+
+  plotingVars.chartY += 1;
 }
 
-function plotEach(value, scale) {
-  //plorting
-  value = value * scale;
-  value = chart.height - value;
+function plotEach(type, current, scale, color) {
+  chartCtx.strokeStyle = color;
 
-  chartCtx.lineTo(chartY, value);
+  chartCtx.beginPath();
+
+  const prevPos = chart.height - plotingVars[type] * scale;
+  chartCtx.moveTo(plotingVars.chartY - 1, prevPos);
+
+  //plorting
+  current = chart.height - current * scale;
+
+  chartCtx.lineTo(plotingVars.chartY, current);
   chartCtx.stroke();
+
+  chartCtx.closePath();
 }
 
 function draw(sys) {
