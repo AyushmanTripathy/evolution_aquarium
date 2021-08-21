@@ -40,6 +40,7 @@ function Plant() {
 
 function Shark() {
   this.healthCap = shark_health_cap;
+  this.age = shark_init_age;
   this.health = shark_starting_health;
   this.viewRadius = shark_view_radius;
   this.reproductionCoolDown = shark_reproduction_cool_down;
@@ -56,6 +57,9 @@ function Shark() {
     //reduce health
     this.health--;
     if (this.health <= 0) return this.die();
+    this.age--;
+    if (this.age <= 0) return this.die();
+
 
     this.move();
     const found = this.checkEnv();
@@ -149,6 +153,7 @@ function Salmon() {
   this.healthCap = salmon_health_cap;
   this.health = salmon_starting_health;
   this.viewRadius = salmon_view_radius;
+  this.age = salmon_init_age;
   this.reproductionCoolDown = salmon_reproduction_cool_down;
 
   this.x = random(0, gridSize - 1);
@@ -163,6 +168,8 @@ function Salmon() {
     //reduce health
     this.health--;
     if (this.health <= 0) return this.die();
+    this.age--;
+    if (this.age <= 0) return this.die();
 
     this.move();
     const found = this.checkEnv();

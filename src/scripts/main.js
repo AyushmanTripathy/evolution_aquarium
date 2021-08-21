@@ -1,10 +1,13 @@
-const canvas = document.querySelector("canvas");
+const canvas = document.querySelector("#ecosystem");
+const chart = document.querySelector("#population_chart");
+const chartCtx = chart.getContext("2d");
 const ctx = canvas.getContext("2d");
 const plant_population = document.querySelector("#plant_population");
 const salmon_population = document.querySelector("#salmon_population");
 const shark_population = document.querySelector("#shark_population");
 
 const blockSize = canvas.height / gridSize;
+let chartY = 0;
 let count = {};
 
 let sys;
@@ -29,6 +32,9 @@ function init() {
     sys.newShark();
   }
 
+  //init chart
+  initPlot();
+
   //init count
   count.plant = init_plant_count;
   count.salmon = init_salmon_count;
@@ -46,7 +52,6 @@ async function loop() {
   if (!running) return;
 
   //check if everyone died
-  if (sys.salmons.length <= 0) return console.log("everyone dead");
   if (chooseRandom(plant_generation_prob)) sys.newplant();
 
   await sleep(frameRate);
@@ -60,23 +65,49 @@ async function loop() {
     shark.frame();
   });
 
+  plot(count.salmon, 5);
+
   //rendering
   draw(sys);
   shark_population.innerHTML = count.shark;
   salmon_population.innerHTML = count.salmon;
   plant_population.innerHTML = count.plant;
 
+  if (count.shark == 0)
+    if (count.salmon == 0) return console.log("everyone died");
+
   return loop();
 }
 
-function makeMap(size, def) {
-  let arr = [];
+function initPlot() {
+  chartCtx.strokeStyle = "#bbb";
 
-  for (let i = 0; i < size; i++) {
-    arr[i] = new Array(size).fill(def);
+  chartCtx.beginPath();
+  chartCtx.moveTo(0, chart.height);
+}
+
+function plot(value) {
+  if (chartY >= chart.width) {
+    chartY = 0;
+    chartCtx.fillStyle = BG;
+    chartCtx.fillRect(0, 0, chart.width, chart.height);
+
+    chartCtx.closePath();
+    initPlot();
   }
 
-  return arr;
+  plotEach(value, salmon_scale);
+
+  chartY += 1;
+}
+
+function plotEach(value, scale) {
+  //plorting
+  value = value * scale;
+  value = chart.height - value;
+
+  chartCtx.lineTo(chartY, value);
+  chartCtx.stroke();
 }
 
 function draw(sys) {
@@ -139,4 +170,13 @@ function stop() {
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+function makeMap(size, def) {
+  let arr = [];
+
+  for (let i = 0; i < size; i++) {
+    arr[i] = new Array(size).fill(def);
+  }
+
+  return arr;
 }
