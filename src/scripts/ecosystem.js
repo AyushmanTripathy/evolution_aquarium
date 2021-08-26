@@ -142,8 +142,10 @@ function Shark() {
   };
 
   this.reproduce = () => {
+    if (chooseRandom(shark_reproduction_prob)) return;
     if (this.reproductionCoolDown != 0) return;
     this.reproductionCoolDown = shark_reproduction_cool_down;
+    this.health -= shark_starting_health;
     sys.newShark();
   };
 }
@@ -248,8 +250,10 @@ function Salmon() {
   };
 
   this.reproduce = () => {
+    if (chooseRandom(salmon_reproduction_prob)) return;
     if (this.reproductionCoolDown != 0) return;
     this.reproductionCoolDown = salmon_reproduction_cool_down;
+    this.health -= salmon_starting_health;
     sys.newSalmon();
   };
 }
